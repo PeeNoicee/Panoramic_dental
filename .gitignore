@@ -1,0 +1,19 @@
+# Ignore the 'DENTEX' directory
+DENTEX/
+
+# Ignore the 'testing1' directory
+testing1/
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore model files in 'fined_tuned_models' and 'trained_models' directories
+fined_tuned_models/
+trained_models/
+
+# Ignore all .txt files
+*.txt
+
+# Ignore the 'utility' directory
+utility/

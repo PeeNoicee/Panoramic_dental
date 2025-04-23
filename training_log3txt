@@ -70,3 +70,68 @@
 2025-04-23 23:13:59,263 - Epoch 7 - Train Loss: 0.2684, Train IoU: 0.2523
 2025-04-23 23:13:59,263 - Epoch 7 - Val Loss: 0.2819, Val IoU: 0.2465
 2025-04-23 23:13:59,263 - Before scheduler step - Learning rate: 0.010000000
+2025-04-23 23:18:25,896 - Epoch 8 - Train Loss: 0.2631, Train IoU: 0.2576
+2025-04-23 23:18:25,896 - Epoch 8 - Val Loss: 0.2747, Val IoU: 0.2837
+2025-04-23 23:18:25,976 - Validation IoU improved, model saved.
+2025-04-23 23:18:25,976 - Before scheduler step - Learning rate: 0.010000000
+2025-04-23 23:28:02,381 - Epoch 9 - Train Loss: 0.2610, Train IoU: 0.2577
+2025-04-23 23:28:02,381 - Epoch 9 - Val Loss: 0.2726, Val IoU: 0.2653
+2025-04-23 23:28:02,381 - Before scheduler step - Learning rate: 0.010000000
+2025-04-23 23:32:34,267 - Epoch 10 - Train Loss: 0.2592, Train IoU: 0.2596
+2025-04-23 23:32:34,267 - Epoch 10 - Val Loss: 0.2666, Val IoU: 0.2687
+2025-04-23 23:32:34,267 - Before scheduler step - Learning rate: 0.010000000
+2025-04-23 23:41:32,118 - Epoch 11 - Train Loss: 0.2551, Train IoU: 0.2645
+2025-04-23 23:41:32,118 - Epoch 11 - Val Loss: 0.2686, Val IoU: 0.2598
+2025-04-23 23:41:32,118 - Before scheduler step - Learning rate: 0.010000000
+2025-04-23 23:46:17,400 - Epoch 12 - Train Loss: 0.2529, Train IoU: 0.2680
+2025-04-23 23:46:17,400 - Epoch 12 - Val Loss: 0.2650, Val IoU: 0.2607
+2025-04-23 23:46:17,400 - Before scheduler step - Learning rate: 0.010000000
+2025-04-23 23:51:16,749 - Epoch 13 - Train Loss: 0.2562, Train IoU: 0.2594
+2025-04-23 23:51:16,749 - Epoch 13 - Val Loss: 0.2755, Val IoU: 0.2673
+2025-04-23 23:51:16,749 - Before scheduler step - Learning rate: 0.010000000
+2025-04-23 23:51:16,750 - After scheduler step - Updated learning rate: 0.010000000
+2025-04-23 23:57:02,105 - Epoch 14 - Train Loss: 0.2999, Train IoU: 0.2337
+2025-04-23 23:57:02,105 - Epoch 14 - Val Loss: 12564.4014, Val IoU: 0.1954
+2025-04-23 23:57:02,105 - Before scheduler step - Learning rate: 0.010000000
+2025-04-24 00:02:45,159 - Epoch 15 - Train Loss: 0.2644, Train IoU: 0.2573
+2025-04-24 00:02:45,160 - Epoch 15 - Val Loss: 0.8047, Val IoU: 0.2062
+2025-04-24 00:02:45,160 - Before scheduler step - Learning rate: 0.005000000
+2025-04-24 00:08:23,733 - Epoch 16 - Train Loss: 0.2589, Train IoU: 0.2560
+2025-04-24 00:08:23,734 - Epoch 16 - Val Loss: 0.2731, Val IoU: 0.2625
+2025-04-24 00:08:23,734 - Before scheduler step - Learning rate: 0.005000000
+2025-04-24 00:13:56,911 - Epoch 17 - Train Loss: 0.2544, Train IoU: 0.2610
+2025-04-24 00:13:56,911 - Epoch 17 - Val Loss: 0.2757, Val IoU: 0.2664
+2025-04-24 00:13:56,911 - Before scheduler step - Learning rate: 0.005000000
+2025-04-24 00:19:43,674 - Epoch 18 - Train Loss: 0.2506, Train IoU: 0.2651
+2025-04-24 00:19:43,675 - Epoch 18 - Val Loss: 0.2938, Val IoU: 0.2544
+2025-04-24 00:19:43,675 - Before scheduler step - Learning rate: 0.005000000
+2025-04-24 00:19:43,676 - After scheduler step - Updated learning rate: 0.005000000
+2025-04-24 00:25:29,202 - Epoch 19 - Train Loss: 0.2481, Train IoU: 0.2629
+2025-04-24 00:25:29,202 - Epoch 19 - Val Loss: 0.2617, Val IoU: 0.2798
+2025-04-24 00:25:29,202 - Before scheduler step - Learning rate: 0.005000000
+2025-04-24 00:31:05,630 - Epoch 20 - Train Loss: 0.2517, Train IoU: 0.2672
+2025-04-24 00:31:05,630 - Epoch 20 - Val Loss: 0.2697, Val IoU: 0.2670
+2025-04-24 00:31:05,630 - Before scheduler step - Learning rate: 0.005000000
+2025-04-24 00:36:35,333 - Epoch 21 - Train Loss: 0.2441, Train IoU: 0.2729
+2025-04-24 00:36:35,333 - Epoch 21 - Val Loss: 0.2518, Val IoU: 0.2823
+2025-04-24 00:36:35,333 - Before scheduler step - Learning rate: 0.002500000
+2025-04-24 00:42:07,530 - Epoch 22 - Train Loss: 0.2384, Train IoU: 0.2757
+2025-04-24 00:42:07,530 - Epoch 22 - Val Loss: 0.2509, Val IoU: 0.2746
+2025-04-24 00:42:07,531 - Before scheduler step - Learning rate: 0.002500000
+2025-04-24 00:47:33,437 - Epoch 23 - Train Loss: 0.2423, Train IoU: 0.2767
+2025-04-24 00:47:33,438 - Epoch 23 - Val Loss: 0.2505, Val IoU: 0.2849
+2025-04-24 00:47:33,605 - Validation IoU improved, model saved.
+2025-04-24 00:47:33,605 - Before scheduler step - Learning rate: 0.002500000
+2025-04-24 00:53:02,161 - Epoch 24 - Train Loss: 0.2381, Train IoU: 0.2746
+2025-04-24 00:53:02,161 - Epoch 24 - Val Loss: 0.2503, Val IoU: 0.2947
+2025-04-24 00:53:02,315 - Validation IoU improved, model saved.
+2025-04-24 00:53:02,330 - Before scheduler step - Learning rate: 0.002500000
+2025-04-24 00:58:52,796 - Epoch 25 - Train Loss: 0.2370, Train IoU: 0.2780
+2025-04-24 00:58:52,798 - Epoch 25 - Val Loss: 0.2565, Val IoU: 0.2876
+2025-04-24 00:58:52,798 - Before scheduler step - Learning rate: 0.002500000
+2025-04-24 01:04:28,486 - Epoch 26 - Train Loss: 0.2361, Train IoU: 0.2764
+2025-04-24 01:04:28,486 - Epoch 26 - Val Loss: 0.2504, Val IoU: 0.2899
+2025-04-24 01:04:28,486 - Before scheduler step - Learning rate: 0.002500000
+2025-04-24 01:10:08,638 - Epoch 27 - Train Loss: 0.2320, Train IoU: 0.2854
+2025-04-24 01:10:08,638 - Epoch 27 - Val Loss: 0.2538, Val IoU: 0.2734
+2025-04-24 01:10:08,638 - Before scheduler step - Learning rate: 0.002500000

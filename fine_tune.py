@@ -67,15 +67,16 @@ model = get_model().to(device)
 checkpoint = torch.load('trained_models/impacted_trained_efficientnet-b1.pth', map_location=device)
 model.load_state_dict(checkpoint['model_state_dict'], strict=False)
 
-# Freeze all model parameters initially
+# Load the best IoU value from the checkpoint
+best_val_IoU = checkpoint.get('best_val_IoU', float('-inf'))
+
+# Optionally freeze/unfreeze layers for fine-tuning
 for param in model.parameters():
     param.requires_grad = False
 
-# Make only the decoder trainable for fine-tuning
 for param in model.decoder.parameters():
     param.requires_grad = True
 
-# Optionally, fine-tune the segmentation head (output layer)
 for param in model.segmentation_head.parameters():
     param.requires_grad = True
 
@@ -182,13 +183,13 @@ for epoch in range(1, num_epochs + 1):
     logging.info(f"Epoch {epoch} - Train Loss: {avg_train_loss:.4f}, Train IoU: {avg_train_iou:.4f}")
     logging.info(f"Epoch {epoch} - Val Loss: {avg_val_loss:.4f}, Val IoU: {avg_val_iou:.4f}")
 
-    # Check if IoU improved
+    # Save the checkpoint with the best IoU when it improves
     if avg_val_iou > best_val_IoU:
         best_val_IoU = avg_val_iou
         patience_counter = 0  # Reset patience if IoU improves
-        save_checkpoint(model, optimizer, 'fined_tuned_models/impacted_fined_tuned_efficientnet_b1.pth')
+        save_checkpoint(model, optimizer, best_val_IoU, 'fined_tuned_models/impacted_fined_tuned_efficientnet_b1.pth')
         print("Validation IoU improved, model saved.")
-        patience_scheduler = 0   # Reset patience_scheduler after Validation IoU improved
+        patience_scheduler = 0  # Reset patience_scheduler after Validation IoU improved
         logging.info("Validation IoU improved, model saved.")
 
     # If neither IoU nor loss improved, increment patience counter

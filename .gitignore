@@ -17,3 +17,6 @@ trained_models/
 
 # Ignore the 'utility' directory
 utility/
+
+# Ignore .idea/
+.idea/

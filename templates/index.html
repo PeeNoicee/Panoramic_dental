@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impacted Tooth Segmentation</title>
+</head>
+<body>
+  <h1>Upload X-ray Image</h1>
+  
+  <form method="POST" action="/predict" enctype="multipart/form-data">
+      <input type="file" name="image" required title="upload a dental xray">
+      <input type="submit" value="Upload and Predict">
+  </form>
+
+
+  {% if result %}
+  <h2>Result</h2>
+  {% if result %}
+  <h2>Result</h2>
+  <img src="{{ result }}" width="512" alt="Segmented dental X-ray with impacted teeth highlighted">
+{% endif %}
+
+  {% endif %}
+</body>
+</html>

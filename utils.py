@@ -1,5 +1,8 @@
 # utils.py
 import torch
+import cv2
+import numpy as np
+
 
 def save_checkpoint(model, optimizer, best_val_IoU, filename):
     """Save model + optimizer state along with best validation IoU"""
@@ -43,3 +46,22 @@ def per_class_iou(logits, targets, class_idx):
     if union == 0:
         return float('nan')
     return (intersection / union).item()
+
+
+
+
+def get_bounding_boxes_and_centroids(mask):
+    contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    boxes, centroids = [], []
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        if w > 5 and h > 5:  # Only consider boxes larger than 5x5 pixels
+            boxes.append((x, y, w, h))
+            M = cv2.moments(cnt)
+            if M['m00'] != 0:
+                cx = int(M['m10'] / M['m00'])
+                cy = int(M['m01'] / M['m00'])
+            else:
+                cx, cy = x + w // 2, y + h // 2
+            centroids.append((cx, cy))
+    return boxes, centroids, contours

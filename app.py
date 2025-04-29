@@ -16,7 +16,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Load model once
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = get_model()
-checkpoint_path = os.path.join('fine_tuned_models', 'impacted_fined_tuned_efficientnet_b1.pth')
+checkpoint_path = os.path.join('fined_tuned_models', 'impacted_fined_tuned_efficientnet_b1.pth')
 checkpoint = torch.load(checkpoint_path, map_location=device)
 model.load_state_dict(checkpoint['model_state_dict'])
 model.to(device)

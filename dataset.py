@@ -5,11 +5,6 @@ import json
 import os
 from torch.utils.data import Dataset
 
-try:
-    from pycocotools import mask as coco_mask  # Added for RLE decoding
-except ImportError:
-    raise ImportError(
-        "pycocotools is not installed. Install it using 'pip install pycocotools' (Linux/Mac) or 'pip install pycocotools-windows' (Windows).")
 
 class ImpactedToothDataset(Dataset):
     def __init__(self, image_dir, json_dir, transform=None):

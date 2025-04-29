@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from torchmetrics.classification import MulticlassJaccardIndex as IoU
 from tqdm import tqdm
 import logging
-from model import get_model
+from model import get_model  # Import the modified get_model with ResNet50
 from augmentation import SegmentationTransforms
 from utils import save_checkpoint
 from dataset import ImpactedToothDataset
@@ -21,20 +21,20 @@ np.random.seed(seed)
 torch.manual_seed(seed)
 
 # 2. Set up logging
-logging.basicConfig(filename='training_log3txt', level=logging.INFO,
+logging.basicConfig(filename='training_log_resnet50_v3.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
 # Log the start of the training
 logging.info('Training started')
 
-# Device configuration (CPU-only)
-device = torch.device("cpu")
+# Device configuration (GPU if available, else CPU)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Hyperparameters
 batch_size = 8
-num_epochs = 200
-learning_rate = 1e-2
-patience_early_stop = 25  # Early stopping patience
+num_epochs = 50
+learning_rate = 1e-6
+patience_early_stop = 10  # Early stopping patience
 patience_scheduler = 0
 
 # Data augmentation / preprocessing
@@ -60,15 +60,12 @@ train_ious = []
 val_losses = []
 val_ious = []
 
-# Model initialization
+# Model initialization using ResNet50 encoder
 model = get_model().to(device)
 
 # Load pre-trained model for fine-tuning (if available)
-checkpoint = torch.load('trained_models/impacted_trained_efficientnet-b1.pth', map_location=device)
-model.load_state_dict(checkpoint['model_state_dict'], strict=False)
-
-# Load the best IoU value from the checkpoint
-best_val_IoU = checkpoint.get('best_val_IoU', float('-inf'))
+checkpoint = torch.load('fined_tuned_models/impacted_fined_tuned_resnet50_v2.pth', map_location=device)
+model.load_state_dict(checkpoint['model_state_dict'])
 
 # Optionally freeze/unfreeze layers for fine-tuning
 for param in model.parameters():
@@ -79,7 +76,6 @@ for param in model.decoder.parameters():
 
 for param in model.segmentation_head.parameters():
     param.requires_grad = True
-
 
 # Initialize CrossEntropyLoss with static class weights
 class CrossEntropyDiceLoss(nn.Module):
@@ -109,16 +105,16 @@ criterion = CrossEntropyDiceLoss()
 
 # Optimizer & Scheduler
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', patience=5, factor=0.5, min_lr=1e-9, verbose=True)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', patience=2, factor=0.5, min_lr=1e-9)
 
 # Metric: multi-class IoU
-iou_metric = IoU(num_classes=5)
+iou_metric = IoU(num_classes=5).to(device)
 
 # Early stopping vars
 best_val_IoU = float('-inf')
 best_val_loss = float('inf')
 patience_counter = 0
-patience_threshold = 5
+patience_threshold = 2
 
 # Record epoch times
 epoch_times = []
@@ -155,6 +151,10 @@ for epoch in range(1, num_epochs + 1):
     avg_train_loss = train_loss / len(train_loader)
     avg_train_iou = train_iou / len(train_loader)
 
+    # Save metrics for plotting
+    train_losses.append(avg_train_loss)
+    train_ious.append(avg_train_iou)
+
     # Validation
     model.eval()
     val_loss = 0.0
@@ -187,7 +187,7 @@ for epoch in range(1, num_epochs + 1):
     if avg_val_iou > best_val_IoU:
         best_val_IoU = avg_val_iou
         patience_counter = 0  # Reset patience if IoU improves
-        save_checkpoint(model, optimizer, best_val_IoU, 'fined_tuned_models/impacted_fined_tuned_efficientnet_b1.pth')
+        save_checkpoint(model, optimizer, best_val_IoU, 'fined_tuned_models/impacted_fined_tuned_resnet50_v3.pth')
         print("Validation IoU improved, model saved.")
         patience_scheduler = 0  # Reset patience_scheduler after Validation IoU improved
         logging.info("Validation IoU improved, model saved.")
@@ -202,24 +202,23 @@ for epoch in range(1, num_epochs + 1):
     logging.info(f"Before scheduler step - Learning rate: {learning_rate_before:.9f}")
     scheduler.step(avg_val_iou)  # Reduce learning rate if it is triggered n times based on the patience value
 
-
     # After IoU stagnation, the learning rate will be reduced
     if patience_scheduler >= patience_threshold:
-            print("Learning rate reduced due to stagnation.")
-            # Log the updated learning rate after reduction
+        print("Learning rate reduced due to stagnation.")
+        # Log the updated learning rate after reduction
 
-            # Unfreeze more layers for further fine-tuning
-            print("Unfreezing more layers for further fine-tuning.")
-            for param in model.encoder.parameters():  # Unfreeze the encoder
-                param.requires_grad = True
-            for param in model.segmentation_head.parameters():  # Unfreeze the segmentation head
-                param.requires_grad = True
+        # Unfreeze more layers for further fine-tuning
+        print("Unfreezing more layers for further fine-tuning.")
+        for param in model.encoder.parameters():  # Unfreeze the encoder
+            param.requires_grad = True
+        for param in model.segmentation_head.parameters():  # Unfreeze the segmentation head
+            param.requires_grad = True
 
-            learning_rate_after = optimizer.param_groups[0]['lr']
-            print(f"After scheduler step - Updated learning rate: {learning_rate_after:.9f}")
-            logging.info(f"After scheduler step - Updated learning rate: {learning_rate_after:.9f}")
+        learning_rate_after = optimizer.param_groups[0]['lr']
+        print(f"After scheduler step - Updated learning rate: {learning_rate_after:.9f}")
+        logging.info(f"After scheduler step - Updated learning rate: {learning_rate_after:.9f}")
 
-            patience_scheduler = 0  # Reset patience_scheduler after taking action
+        patience_scheduler = 0  # Reset patience_scheduler after taking action
 
     # Early stopping condition: stop training if patience exceeds limit
     if patience_counter >= patience_early_stop:
@@ -239,13 +238,6 @@ logging.info("Training finished")
 # Log the highest validation IoU after training finishes
 print(f"Highest Validation IoU: {best_val_IoU:.4f}")
 logging.info(f"Highest Validation IoU: {best_val_IoU:.4f}")
-
-# At the end of each epoch, append the average training loss
-train_losses.append(avg_train_loss)  # Add this line to track train losses
-
-# Validation loss and IoU should also be tracked
-val_losses.append(avg_val_loss)  # Add this line to track validation losses
-val_ious.append(avg_val_iou)     # Add this line to track validation IoU
 
 # After the training loop, plot the losses and IoU values
 plt.figure(figsize=(12, 6))

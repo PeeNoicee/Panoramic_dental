@@ -10,14 +10,14 @@ import os
 # --- Config ---
 data_dir = 'DENTEX/disease/input'
 output_dir = 'DENTEX/disease/results1'
-checkpoint_path = 'fined_tuned_models/impacted_fined_tuned_efficientnet_b1.pth'  # Ensure this is the correct B1 checkpoint
+checkpoint_path = 'fined_tuned_models/impacted_fined_tuned_resnet50_v2.pth'  # Ensure this is the correct B1 checkpoint
 image_size = (512, 512)
 impact_class_id = 1  # Impacted class
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # --- Model Setup ---
 model = UnetPlusPlus(
-    encoder_name='efficientnet-b1',   # Change this to 'efficientnet-b1'
+    encoder_name='resnet50',   # Change this to 'efficientnet-b1' if needed
     encoder_weights=None,             # Set to None if you're not using pre-trained weights
     in_channels=3,
     classes=5,
@@ -27,7 +27,7 @@ model = UnetPlusPlus(
 # Load the checkpoint for EfficientNet-B1
 checkpoint = torch.load(checkpoint_path, map_location=device)
 state_dict = checkpoint.get('model_state_dict', checkpoint)
-model.load_state_dict(state_dict)
+model.load_state_dict(state_dict, strict=False)
 model.to(device)
 model.eval()
 
@@ -35,7 +35,7 @@ model.eval()
 preprocess = transforms.Compose([
     transforms.Resize(image_size),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standard EfficientNet B1 normalization
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standard EfficientNet normalization
 ])
 
 # --- Helpers ---
@@ -54,11 +54,6 @@ def get_bounding_boxes_and_centroids(mask):
                 cx, cy = x + w // 2, y + h // 2
             centroids.append((cx, cy))
     return boxes, centroids, contours
-
-def estimate_tooth_number(x_center):
-    region = int(x_center * 8 / image_size[0])
-    return 11 + region
-
 
 # --- Main Inference ---
 img_path = 'DENTEX/training_data/unlabelled/xrays/train_4.png'  # Replace with your image path
@@ -83,7 +78,7 @@ plt.colorbar()
 plt.show()
 
 # --- Apply Threshold to Impacted Class ---
-threshold = 0.05  # Adjust threshold as needed
+threshold = 0.5  # Adjust threshold as needed
 impacted_mask = (output_prob[0, impact_class_id] > threshold).float().cpu().numpy()
 
 print("Class Probabilities: ")
@@ -117,7 +112,7 @@ draw = ImageDraw.Draw(annotated)
 for (x, y, w, h), (cx, cy) in zip(boxes, centroids):
     print(f"Drawing box: {(x, y, w, h)} and centroid: {(cx, cy)}")
 
-    label = f"N: {estimate_tooth_number(cx)}  D: Impacted"
+    label = "D: Impacted"
     draw.rectangle([x, y, x + w, y + h], outline='red', width=2)
     draw.ellipse((cx - 5, cy - 5, cx + 5, cy + 5), fill='blue')
 

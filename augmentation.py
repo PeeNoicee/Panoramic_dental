@@ -64,7 +64,6 @@ class SegmentationTransforms:
         image = np.array(image)
         mask = np.array(mask)
 
-
         # Geometric transforms (same for image & mask)
         if random.random() < 0.5:
             image = np.fliplr(image)
@@ -89,8 +88,8 @@ class SegmentationTransforms:
         i, j, h, w = transforms.RandomResizedCrop.get_params(
             image_pil, scale=(0.8, 1.0), ratio=(1.0, 1.0)
         )
-        image = F.resized_crop(image_pil, i, j, h, w, size=(256, 256), interpolation=Image.BILINEAR)
-        mask = F.resized_crop(mask_pil, i, j, h, w, size=(256, 256), interpolation=Image.NEAREST)
+        image = F.resized_crop(image_pil, i, j, h, w, size=(224, 224), interpolation=Image.BILINEAR)
+        mask = F.resized_crop(mask_pil, i, j, h, w, size=(224, 224), interpolation=Image.NEAREST)
 
         # Color jitter on image only
         image = self.color_jitter(image)
